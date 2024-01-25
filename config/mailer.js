@@ -18,9 +18,49 @@ exports.sendMail = async ({ to, subject, text }) => {
   };
 
   try {
+    // console.log(`sending to ${to}`);
     await transporter.sendMail(mailOptions);
-    console.log("Eamil sent successfully");
+    // console.log(`sended to ${to}`);
   } catch (error) {
     console.log("Email send failed with error:", error);
   }
 };
+
+/*
+
+// const userObject = {
+//   to: email,
+//   subject: "Hello",
+//   text: "Nice",
+// };
+// await sendMail(userObject);
+
+
+const { email1, email2, email3 } = req.body;
+let emailsList = [email1, email2, email3];
+
+  let emails = [];
+  for (let i = 0; i < emailsList.length; i++) {
+    emails[i] = {
+      to: emailsList[i],
+      subject: "Hello",
+      text: "Hello",
+    };
+  }
+
+  let toSend = [];
+  emails.forEach((item) => {
+    toSend.push(sendMail(item));
+  });
+  console.log(toSend);
+
+  Promise.all([...toSend]).then(
+    (response) => {
+      console.log(response);
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+
+*/
