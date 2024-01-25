@@ -91,9 +91,9 @@ const forgotpassword = async (req, res) => {
     { expiresIn: "30m" }
   );
 
-  foundUser.resetToken = resetToken;
+  // foundUser.resetToken = resetToken;
 
-  await User.findByIdAndUpdate(foundUser._id, foundUser);
+  // await User.findByIdAndUpdate(foundUser._id, foundUser);
 
   console.log(`http://localhost:3000/reset-password?resetToken=${resetToken}`);
 
@@ -120,8 +120,9 @@ const verifyToken = async (req, res) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
 
       const foundUser = await User.findById(decoded.id).select("-password");
-      console.log(foundUser);
-      if (!foundUser || foundUser.resetToken !== verifyToken)
+      // console.log(foundUser);
+      // if (!foundUser || foundUser.resetToken !== verifyToken)
+      if (!foundUser)
         return res.status(401).json({ message: "Unauthorized" });
 
       return res.json({ message: true });
@@ -138,17 +139,18 @@ const resetPassword = async (req, res) => {
     verifyToken,
     process.env.RESET_TOKEN_SECRET,
     async (err, decoded) => {
-      console.log(decoded);
+      // console.log(decoded);
       if (err) return res.status(403).json({ message: "Forbidden" });
 
       const foundUser = await User.findById(decoded.id);
-      console.log(foundUser);
-      if (!foundUser || foundUser.resetToken !== verifyToken)
+      // console.log(foundUser);
+      // if (!foundUser || foundUser.resetToken !== verifyToken)
+      if (!foundUser)
         return res.status(401).json({ message: "Unauthorized" });
 
       const hashedPwd = await bcrypt.hash(password, 10);
       foundUser.password = hashedPwd;
-      foundUser.resetToken = "";
+      // foundUser.resetToken = "";
 
       await User.findByIdAndUpdate(foundUser._id, foundUser);
 
