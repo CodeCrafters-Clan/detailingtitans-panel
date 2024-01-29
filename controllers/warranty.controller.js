@@ -137,9 +137,19 @@ const createWarranty = async (req, res) => {
   }
 };
 
-const updateWarranty = async (req, res) => {};
+// no need for updateWarranty..
+const updateWarranty = async (req, res) => {
 
-const deleteWarranty = async (req, res) => {};
+};
+
+const deleteWarranty = async (req, res) => {
+  const {id} = req.body;
+  if(!id) return res.status(400).json({message:"Warranty Id required.."});
+  const warranty = await Warranty.findById(id).exec();
+  if (!warranty) return res.status(400).json({message:"Warranty not found"});
+  await Warranty.deleteOne();
+  return res.json({message:"Warranty Deleted!!"})
+};
 
 const getWarranty = async (req, res) => {
   const id = req.params.id;
