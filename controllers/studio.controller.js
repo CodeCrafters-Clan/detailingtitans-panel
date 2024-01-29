@@ -80,7 +80,7 @@ const createStudio = async (req, res) => {
 const updateStudio = async (req, res) => {
   const {
     id,
-    userId,
+    // userId,
     address,
     city,
     pincode,
@@ -98,7 +98,7 @@ const updateStudio = async (req, res) => {
 
   if (
     !id ||
-    !userId ||
+    // !userId ||
     !address ||
     !city ||
     !pincode ||
@@ -116,11 +116,32 @@ const updateStudio = async (req, res) => {
   }
 
   const studio = await Studio.findById(id).exec();
+  if (!studio) return res.status(400).json({ message: "Studio not found" });
 
-  if(!studio) return res.status(400).json({ message: "Note not found" });
+  studio.address = address;
+  studio.city = city;
+  studio.pincode = pincode;
+  studio.company_name = company_name;
+  studio.gst_number = gst_number;
+  studio.gst_doc = gst_doc;
+  studio.pan_number = pan_number;
+  studio.pan_doc = pan_doc;
+  studio.studio_doc = studio_doc;
+  studio.aadhar_number = aadhar_number;
+  studio.aadhar_doc = aadhar_doc;
+  studio.user_doc = user_doc;
+
+  if (comment) {
+    studio.comment = comment;
+  }
+
+  const updatedStudio = await studio.save();
+
+  return res.json({ message: `Updated Successfully!!` });
 };
 
 module.exports = {
   getallStudios,
   createStudio,
+  updateStudio,
 };

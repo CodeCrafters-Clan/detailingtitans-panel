@@ -7,7 +7,7 @@ router
   .route("/")
   .get(studioController.getallStudios)
   .post(studioController.createStudio)
-  .patch()
+  .patch(studioController.updateStudio)
   .delete();
 
 module.exports = router;
