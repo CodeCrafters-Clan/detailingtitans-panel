@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
 
+// dealer details are not for detailing titans
+// installer_coverage is a studio name..
+// no relation with user..
+
 const warrantySchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
+    // user: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   required: true,
+    //   ref: "User",
+    // },
     productkey: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -19,7 +23,7 @@ const warrantySchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
     mobile: {
       type: Number,
@@ -112,16 +116,16 @@ const warrantySchema = new mongoose.Schema(
     comments: {
       type: String,
     },
-    status: {
+    videolink: {
+      type: String,
+    },
+    dealer_status: {
       type: Boolean,
       default: false,
     },
     admin_status: {
       type: Boolean,
       default: false,
-    },
-    videolink: {
-      type: String,
     },
   },
   {
