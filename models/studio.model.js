@@ -57,6 +57,7 @@ const studioSchema = new mongoose.Schema(
     },
     comment: {
       type: String,
+      default:""
     },
     status: {
       type: Boolean,

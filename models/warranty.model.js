@@ -8,9 +8,9 @@ const warrantySchema = new mongoose.Schema(
       ref: "User",
     },
     productkey: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
-      unique: true,
+      ref: "ProductKey",
     },
     name: {
       type: String,

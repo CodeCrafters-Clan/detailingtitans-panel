@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const productkeySchema = new mongoose.Schema(
   {
-    productkey: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    // productkey: {
+    //   type: String,
+    //   required: true,
+    //   unique: true,
+    // },
     status: {
       type: Boolean,
       default: false,
