@@ -140,8 +140,26 @@ const updateStudio = async (req, res) => {
   return res.json({ message: `Updated Successfully!!` });
 };
 
+const deleteStudio = async (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ message: "Studio ID Required" });
+  const studio = await Studio.findById(id).exec();
+  if (!studio) return res.status(400).json({ message: "Studio not found" });
+  const result = await studio.deleteOne();
+  return res.json({ message: `studio deleted!!` });
+};
+
+const getStudio = async (req,res) => {
+  const id = req.params.id;
+  const studio = await Studio.findById(id).lean();
+  if(!studio) return res.status(400).json({message:"Studio not found"});
+  return res.json(studio);
+}
+
 module.exports = {
   getallStudios,
   createStudio,
   updateStudio,
+  deleteStudio,
+  getStudio,
 };
