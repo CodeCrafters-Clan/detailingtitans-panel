@@ -28,6 +28,8 @@ app.use("/", require("./routes/root"));
 app.use("/auth", require("./routes/auth.route"));
 app.use("/users", require("./routes/user.route"));
 app.use("/studios", require("./routes/studio.route"));
+app.use("/warranties", require("./routes/warranty.route"));
+app.use("/productkeys",require("./routes/productkey.route"));
 
 app.all("*", (req, res) => {
   res.status(404);
