@@ -5,13 +5,14 @@ const { sendMail } = require("../config/mailer");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
   if (!email || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const foundUser = await User.findOne({ email }).exec();
-  //   console.log(foundUser);
-  if (!foundUser || !foundUser.status) {
+  const foundUser = await User.findOne({ email: email }).exec();
+  // console.log(foundUser);
+  if (!foundUser) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -28,13 +29,14 @@ const login = async (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: "1d" }
   );
-  res.cookie("jwt", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
-  res.json({ token: accessToken });
+  // it is not working with nextJs
+  // res.cookie("jwt", refreshToken, {
+  //   httpOnly: true,
+  //   secure: true,
+  //   sameSite: "None",
+  //   maxAge: 24 * 60 * 60 * 1000,
+  // });
+  res.json({ user: foundUser._id, refreshToken: refreshToken });
 };
 
 const refresh = async (req, res) => {
@@ -60,19 +62,20 @@ const refresh = async (req, res) => {
         { expiresIn: "15m" }
       );
 
-      res.json({ token: accessToken });
+      res.json({ accessToken: accessToken });
     }
   );
 };
 
 const logout = async (req, res) => {
   const cookies = req.cookies;
+  console.log(cookies);
   if (!cookies?.jwt)
     return res.status(204).json({ message: "Already Logged Out!!" }); //No content
   res.clearCookie("jwt", {
-    httpOnly: true,
-    sameSite: "None",
-    secure: true,
+    // httpOnly: true,
+    // sameSite: "None",
+    // secure: true,
   });
   res.json({ message: "Logged Out Successfully !!" });
 };
@@ -122,8 +125,7 @@ const verifyToken = async (req, res) => {
       const foundUser = await User.findById(decoded.id).select("-password");
       // console.log(foundUser);
       // if (!foundUser || foundUser.resetToken !== verifyToken)
-      if (!foundUser)
-        return res.status(401).json({ message: "Unauthorized" });
+      if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
       return res.json({ message: true });
     }
@@ -145,8 +147,7 @@ const resetPassword = async (req, res) => {
       const foundUser = await User.findById(decoded.id);
       // console.log(foundUser);
       // if (!foundUser || foundUser.resetToken !== verifyToken)
-      if (!foundUser)
-        return res.status(401).json({ message: "Unauthorized" });
+      if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
       const hashedPwd = await bcrypt.hash(password, 10);
       foundUser.password = hashedPwd;

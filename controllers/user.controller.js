@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
     mobile,
     password: hashedPwd,
   };
-
+  console.log("Yaha");
   const user = await User.create(userObject);
 
   if (user) {
