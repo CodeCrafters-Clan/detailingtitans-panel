@@ -7,6 +7,10 @@ const productkeySchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    tenure: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: Boolean,
       default: false,

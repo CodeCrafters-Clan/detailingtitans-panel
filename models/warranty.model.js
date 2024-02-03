@@ -41,18 +41,18 @@ const warrantySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    dealer_code: {
-      type: String,
-    },
-    dealer_name: {
-      type: String,
-    },
-    dealer_mobile: {
-      type: String,
-    },
-    dealer_address: {
-      type: String,
-    },
+    // dealer_code: {
+    //   type: String,
+    // },
+    // dealer_name: {
+    //   type: String,
+    // },
+    // dealer_mobile: {
+    //   type: String,
+    // },
+    // dealer_address: {
+    //   type: String,
+    // },
     vehicle_year: {
       type: String,
       required: true,
@@ -77,24 +77,24 @@ const warrantySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    ppf_coverage: {
-      type: String,
-    },
-    tint_coverage: {
-      type: String,
-    },
-    fusion_coverage: {
-      type: String,
-    },
+    // ppf_coverage: {
+    //   type: String,
+    // },
+    // tint_coverage: {
+    //   type: String,
+    // },
+    // fusion_coverage: {
+    //   type: String,
+    // },
     installer_coverage: {
       type: String,
     },
     installer_by: {
       type: String,
     },
-    installer_customer_id: {
-      type: String,
-    },
+    // installer_customer_id: {
+    //   type: String,
+    // },
     photo1: {
       type: String,
     },
@@ -110,20 +110,20 @@ const warrantySchema = new mongoose.Schema(
     photo5: {
       type: String,
     },
-    photo6: {
-      type: String,
-    },
-    comments: {
+    // photo6: {
+    //   type: String,
+    // },
+    comment: {
       type: String,
     },
     videolink: {
       type: String,
     },
-    dealer_status: {
-      type: Boolean,
-      default: false,
-    },
-    admin_status: {
+    // dealer_status: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    status: {
       type: Boolean,
       default: false,
     },

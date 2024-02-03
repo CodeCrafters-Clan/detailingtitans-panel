@@ -5,5 +5,6 @@ const keyController = require("../controllers/productkey.controller");
 
 router.use(verifyJWT);
 router.route("/").get(keyController.readtoDB);
+router.route("/:key").get(keyController.getKeyDetails);
 
 module.exports = router;

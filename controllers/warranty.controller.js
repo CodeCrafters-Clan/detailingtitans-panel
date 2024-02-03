@@ -20,29 +20,20 @@ const createWarranty = async (req, res) => {
     address,
     city,
     pincode,
-    dealer_code,
-    dealer_name,
-    dealer_mobile,
-    dealer_address,
     vehicle_year,
     vehicle_make,
     vehicle_model,
     vehicle_number,
     vehicle_chassi_no,
     vehicle_installation_date,
-    ppf_coverage,
-    tint_coverage,
-    fusion_coverage,
     installer_coverage,
     installer_by,
-    installer_customer_id,
     photo1,
     photo2,
     photo3,
     photo4,
     photo5,
-    photo6,
-    comments,
+    comment,
     videolink,
   } = req.body;
 
@@ -59,7 +50,9 @@ const createWarranty = async (req, res) => {
     !vehicle_model ||
     !vehicle_number ||
     !vehicle_chassi_no ||
-    !vehicle_installation_date
+    !vehicle_installation_date ||
+    !installer_coverage ||
+    !installer_by
   ) {
     return res.status(400).json({ message: "Necessary fields are required" });
   }
@@ -94,29 +87,20 @@ const createWarranty = async (req, res) => {
     address,
     city,
     pincode,
-    dealer_code,
-    dealer_name,
-    dealer_mobile,
-    dealer_address,
     vehicle_year,
     vehicle_make,
     vehicle_model,
     vehicle_number,
     vehicle_chassi_no,
     vehicle_installation_date,
-    ppf_coverage,
-    tint_coverage,
-    fusion_coverage,
     installer_coverage,
     installer_by,
-    installer_customer_id,
     photo1,
     photo2,
     photo3,
     photo4,
     photo5,
-    photo6,
-    comments,
+    comment,
     videolink,
   };
 
@@ -138,17 +122,15 @@ const createWarranty = async (req, res) => {
 };
 
 // no need for updateWarranty..
-const updateWarranty = async (req, res) => {
-
-};
+const updateWarranty = async (req, res) => {};
 
 const deleteWarranty = async (req, res) => {
-  const {id} = req.body;
-  if(!id) return res.status(400).json({message:"Warranty Id required.."});
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ message: "Warranty Id required.." });
   const warranty = await Warranty.findById(id).exec();
-  if (!warranty) return res.status(400).json({message:"Warranty not found"});
+  if (!warranty) return res.status(400).json({ message: "Warranty not found" });
   await Warranty.deleteOne();
-  return res.json({message:"Warranty Deleted!!"})
+  return res.json({ message: "Warranty Deleted!!" });
 };
 
 const getWarranty = async (req, res) => {
