@@ -8,7 +8,8 @@ const getallStudios = async (req, res) => {
   // }
   const studioswithUser = await Studio.find().populate("user");
   if (!studioswithUser?.length) {
-    return res.status(400).json({ message: "No studios found" });
+    // return res.status(400).json({ message: "No studios found" });
+    return res.json([]);
   }
   return res.json(studioswithUser);
 };
@@ -143,11 +144,13 @@ const updateStudio = async (req, res) => {
 };
 
 const deleteStudio = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   if (!id) return res.status(400).json({ message: "Studio ID Required" });
   const studio = await Studio.findById(id).exec();
+  const user = await User.findById(studio.user);
   if (!studio) return res.status(400).json({ message: "Studio not found" });
-  const result = await studio.deleteOne();
+  await user.deleteOne();
+  await studio.deleteOne();
   return res.json({ message: `Studio Deleted!!` });
 };
 
@@ -158,10 +161,23 @@ const getStudio = async (req, res) => {
   return res.json(studio);
 };
 
+const approveStudio = async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ message: "Studio ID Required" });
+  const studio = await Studio.findById(id).exec();
+  if (!studio) return res.status(400).json({ message: "Studio not found" });
+  const user = await User.findById(studio.user);
+  if (!user) return res.status(400).json({ message: "User not found" });
+  user.status = true;
+  await user.save();
+  return res.json({ message: `Studio Approved` });
+};
+
 module.exports = {
   getallStudios,
   createStudio,
   updateStudio,
   deleteStudio,
   getStudio,
+  approveStudio,
 };

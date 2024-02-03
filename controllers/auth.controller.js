@@ -12,18 +12,18 @@ const login = async (req, res) => {
 
   const foundUser = await User.findOne({ email: email }).exec();
   // console.log(foundUser);
-  if (!foundUser) {
+  if (!foundUser || !foundUser?.status) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const match = await bcrypt.compare(password, foundUser.password);
   if (!match) return res.status(401).json({ message: "Unauthorized" });
 
-  const accessToken = jwt.sign(
-    { id: foundUser._id },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m" }
-  );
+  // const accessToken = jwt.sign(
+  //   { id: foundUser._id },
+  //   process.env.ACCESS_TOKEN_SECRET,
+  //   { expiresIn: "15m" }
+  // );
   const refreshToken = jwt.sign(
     { id: foundUser._id },
     process.env.REFRESH_TOKEN_SECRET,
