@@ -2,15 +2,19 @@ const Studio = require("../models/studio.model");
 const User = require("../models/user.model");
 
 const getallStudios = async (req, res) => {
-  const studios = await Studio.find().lean();
-  if (!studios?.length) {
+  // const studios = await Studio.find().lean();
+  // if (!studios?.length) {
+  //   return res.status(400).json({ message: "No studios found" });
+  // }
+  const studioswithUser = await Studio.find().populate("user");
+  if (!studioswithUser?.length) {
     return res.status(400).json({ message: "No studios found" });
   }
-  return res.json(studios);
+  return res.json(studioswithUser);
 };
 
 const createStudio = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const {
     userId,
     address,
@@ -26,6 +30,7 @@ const createStudio = async (req, res) => {
     aadhar_doc,
     user_doc,
     comment,
+    status,
   } = req.body;
 
   if (
@@ -58,6 +63,7 @@ const createStudio = async (req, res) => {
     aadhar_number,
     aadhar_doc,
     user_doc,
+    status,
   };
 
   if (comment) {
