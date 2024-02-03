@@ -21,23 +21,18 @@ const studioSchema = new mongoose.Schema(
     },
     company_name: {
       type: String,
-      required: true,
     },
     gst_number: {
       type: String,
-      required: true,
     },
     gst_doc: {
       type: String,
-      required: true,
     },
     pan_number: {
       type: String,
-      required: true,
     },
     pan_doc: {
       type: String,
-      required: true,
     },
     studio_doc: {
       type: String,
@@ -57,7 +52,7 @@ const studioSchema = new mongoose.Schema(
     },
     comment: {
       type: String,
-      default:""
+      default: "",
     },
     status: {
       type: Boolean,

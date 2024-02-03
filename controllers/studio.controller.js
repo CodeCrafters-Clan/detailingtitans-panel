@@ -10,6 +10,7 @@ const getallStudios = async (req, res) => {
 };
 
 const createStudio = async (req, res) => {
+  console.log(req.body);
   const {
     userId,
     address,
@@ -32,11 +33,6 @@ const createStudio = async (req, res) => {
     !address ||
     !city ||
     !pincode ||
-    !company_name ||
-    !gst_number ||
-    !gst_doc ||
-    !pan_number ||
-    !pan_doc ||
     !studio_doc ||
     !aadhar_number ||
     !aadhar_doc ||
@@ -149,12 +145,12 @@ const deleteStudio = async (req, res) => {
   return res.json({ message: `Studio Deleted!!` });
 };
 
-const getStudio = async (req,res) => {
+const getStudio = async (req, res) => {
   const id = req.params.id;
   const studio = await Studio.findById(id).lean();
-  if(!studio) return res.status(400).json({message:"Studio not found"});
+  if (!studio) return res.status(400).json({ message: "Studio not found" });
   return res.json(studio);
-}
+};
 
 module.exports = {
   getallStudios,
