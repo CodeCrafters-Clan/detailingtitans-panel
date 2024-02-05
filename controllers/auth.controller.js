@@ -25,7 +25,7 @@ const login = async (req, res) => {
   //   { expiresIn: "15m" }
   // );
   const refreshToken = jwt.sign(
-    { id: foundUser._id,role:foundUser?.role },
+    { id: foundUser._id, role: foundUser?.role },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: "1d" }
   );
@@ -36,7 +36,11 @@ const login = async (req, res) => {
   //   sameSite: "None",
   //   maxAge: 24 * 60 * 60 * 1000,
   // });
-  res.json({ user: foundUser._id, refreshToken: refreshToken });
+  res.json({
+    user: foundUser._id,
+    refreshToken: refreshToken,
+    role: foundUser.role,
+  });
 };
 
 const refresh = async (req, res) => {

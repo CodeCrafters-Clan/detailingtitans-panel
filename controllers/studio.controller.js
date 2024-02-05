@@ -14,6 +14,7 @@ const getallStudios = async (req, res) => {
   return res.json(studioswithUser);
 };
 
+// the status we are getting here is off user not for studio..
 const createStudio = async (req, res) => {
   // console.log(req.body);
   const {
@@ -55,6 +56,8 @@ const createStudio = async (req, res) => {
   const user = await User.findById(userId).exec();
   if (!user) return res.status(400).json({ message: "User not exists!" });
 
+  user.status = status;
+
   let studioObj = {
     user: userId,
     address,
@@ -74,7 +77,6 @@ const createStudio = async (req, res) => {
     aadhar_number,
     aadhar_doc,
     user_doc,
-    status,
   };
 
   if (comment) {
@@ -82,7 +84,7 @@ const createStudio = async (req, res) => {
   }
 
   const studio = await Studio.create(studioObj);
-
+  await user.save();
   if (studio) {
     return res.status(201).json({ message: "New Studio created" });
   } else {
