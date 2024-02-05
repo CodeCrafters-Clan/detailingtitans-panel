@@ -12,6 +12,8 @@ const getallWarranties = async (req, res) => {
 
 // installer_coverage is a studio name..
 const createWarranty = async (req, res) => {
+  console.log(req.role);
+  const isAdmin = "admin" === req.role;
   const {
     userId,
     productkeyId,
@@ -72,8 +74,7 @@ const createWarranty = async (req, res) => {
 
   const user = await User.findById(userId).lean();
 
-  if(!user)
-    return res.status(400).json({message:"User not exists!"});
+  if (!user) return res.status(400).json({ message: "User not exists!" });
 
   // console.log(productKey);
   const duplicateWarranty = await Warranty.findOne({
@@ -91,7 +92,7 @@ const createWarranty = async (req, res) => {
   // console.log(productKey._id);
 
   let warrantyObj = {
-    user:user._id,
+    user: user._id,
     productkey: productKey._id,
     name,
     email,
@@ -119,6 +120,7 @@ const createWarranty = async (req, res) => {
     photo5name,
     comment,
     videolink,
+    status: isAdmin,
   };
 
   for (const key in warrantyObj) {
@@ -132,6 +134,11 @@ const createWarranty = async (req, res) => {
   const warranty = await Warranty.create(warrantyObj);
 
   if (warranty) {
+    if (isAdmin) {
+      const key = await ProductKey.findById(productKey._id);
+      key.status = isAdmin;
+      await key.save();
+    }
     return res.status(201).json({ message: "New Warranty created" });
   } else {
     return res.status(400).json({ message: "Invalid warranty data received" });
@@ -168,9 +175,7 @@ const checkWarranty = async (req, res) => {
   console.log(vehNo);
 };
 
-const approveWarranty = async (req,res) => {
-
-}
+const approveWarranty = async (req, res) => {};
 
 module.exports = {
   getallWarranties,
