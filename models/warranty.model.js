@@ -138,10 +138,10 @@ const warrantySchema = new mongoose.Schema(
     //   type: Boolean,
     //   default: false,
     // },
-    status: {
-      type: Boolean,
-      default: false,
-    },
+    // status: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   {
     timestamps: true,

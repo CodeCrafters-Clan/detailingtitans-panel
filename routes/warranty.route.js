@@ -12,7 +12,7 @@ router.route("/checkWarranty/:vehNo").get(warrantyController.checkWarranty);
 
 router.use(verifyAdmin);
 router.route("/").get(warrantyController.getallWarranties);
-router.route("/").delete(warrantyController.deleteWarranty);
+router.route("/:id").delete(warrantyController.deleteWarranty);
 router.route("/:id").post(warrantyController.approveWarranty);
 // .patch(warrantyController.updateWarranty)
 

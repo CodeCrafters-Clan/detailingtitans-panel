@@ -3,9 +3,14 @@ const Warranty = require("../models/warranty.model");
 const ProductKey = require("../models/productkey.model");
 
 const getallWarranties = async (req, res) => {
-  const warranties = await Warranty.find().lean();
+  // const warranties = await Warranty.find().lean();
+  // if (!warranties?.length) {
+  //   return res.status(400).json({ message: "No Warranties Found!!" });
+  // }
+  // return res.json(warranties);
+  const warranties = await Warranty.find().populate("productkey");
   if (!warranties?.length) {
-    return res.status(400).json({ message: "No Warranties Found!!" });
+    return res.json([]);
   }
   return res.json(warranties);
 };
@@ -120,7 +125,7 @@ const createWarranty = async (req, res) => {
     photo5name,
     comment,
     videolink,
-    status: isAdmin,
+    // status: isAdmin,
   };
 
   for (const key in warrantyObj) {
@@ -149,10 +154,17 @@ const createWarranty = async (req, res) => {
 const updateWarranty = async (req, res) => {};
 
 const deleteWarranty = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   if (!id) return res.status(400).json({ message: "Warranty Id required.." });
   const warranty = await Warranty.findById(id).exec();
   if (!warranty) return res.status(400).json({ message: "Warranty not found" });
+
+  const key = await ProductKey.findById(warranty.productkey);
+  // console.log(key);
+  if (!key) return res.status(400).json({ message: "Productkey not found" });
+  key.status = false;
+  await key.save();
+
   await Warranty.deleteOne();
   return res.json({ message: "Warranty Deleted!!" });
 };
@@ -175,7 +187,21 @@ const checkWarranty = async (req, res) => {
   console.log(vehNo);
 };
 
-const approveWarranty = async (req, res) => {};
+const approveWarranty = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  if (!id) return res.status(400).json({ message: "Warranty ID Required" });
+  const warranty = await Warranty.findById(id).exec();
+  console.log(warranty);
+  if (!warranty) return res.status(400).json({ message: "Warranty not found" });
+
+  const key = await ProductKey.findById(warranty.productkey);
+  console.log(key);
+  if (!key) return res.status(400).json({ message: "Productkey not found" });
+  key.status = true;
+  await key.save();
+  return res.json({ message: "Warranty Approved" });
+};
 
 module.exports = {
   getallWarranties,
