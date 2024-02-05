@@ -18,6 +18,11 @@ const createStudio = async (req, res) => {
   // console.log(req.body);
   const {
     userId,
+    user_doc_name,
+    aadhar_doc_name,
+    studio_doc_name,
+    pan_doc_name,
+    gst_doc_name,
     address,
     city,
     pincode,
@@ -54,6 +59,11 @@ const createStudio = async (req, res) => {
     user: userId,
     address,
     city,
+    user_doc_name,
+    aadhar_doc_name,
+    studio_doc_name,
+    pan_doc_name,
+    gst_doc_name,
     pincode,
     company_name,
     gst_number,
