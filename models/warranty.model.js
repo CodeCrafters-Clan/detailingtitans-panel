@@ -6,11 +6,11 @@ const mongoose = require("mongoose");
 
 const warrantySchema = new mongoose.Schema(
   {
-    // user: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: true,
-    //   ref: "User",
-    // },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
     productkey: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -95,6 +95,21 @@ const warrantySchema = new mongoose.Schema(
     // installer_customer_id: {
     //   type: String,
     // },
+    photo1name: {
+      type: String,
+    },
+    photo2name: {
+      type: String,
+    },
+    photo3name: {
+      type: String,
+    },
+    photo4name: {
+      type: String,
+    },
+    photo5name: {
+      type: String,
+    },
     photo1: {
       type: String,
     },

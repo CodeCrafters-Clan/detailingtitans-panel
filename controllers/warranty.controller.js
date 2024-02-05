@@ -13,6 +13,7 @@ const getallWarranties = async (req, res) => {
 // installer_coverage is a studio name..
 const createWarranty = async (req, res) => {
   const {
+    userId,
     productkeyId,
     name,
     email,
@@ -33,6 +34,11 @@ const createWarranty = async (req, res) => {
     photo3,
     photo4,
     photo5,
+    photo1name,
+    photo2name,
+    photo3name,
+    photo4name,
+    photo5name,
     comment,
     videolink,
   } = req.body;
@@ -64,6 +70,11 @@ const createWarranty = async (req, res) => {
   if (!productKey)
     return res.status(400).json({ message: "Invalid product key!!" });
 
+  const user = await User.findById(userId).lean();
+
+  if(!user)
+    return res.status(400).json({message:"User not exists!"});
+
   // console.log(productKey);
   const duplicateWarranty = await Warranty.findOne({
     // "productkey.$oid": productKey.$oid,
@@ -80,6 +91,7 @@ const createWarranty = async (req, res) => {
   // console.log(productKey._id);
 
   let warrantyObj = {
+    user:user._id,
     productkey: productKey._id,
     name,
     email,
@@ -100,6 +112,11 @@ const createWarranty = async (req, res) => {
     photo3,
     photo4,
     photo5,
+    photo1name,
+    photo2name,
+    photo3name,
+    photo4name,
+    photo5name,
     comment,
     videolink,
   };
@@ -141,10 +158,27 @@ const getWarranty = async (req, res) => {
   return res.json(warranty);
 };
 
+const getUserWarranties = async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+};
+
+const checkWarranty = async (req, res) => {
+  const { vehNo } = req.params;
+  console.log(vehNo);
+};
+
+const approveWarranty = async (req,res) => {
+
+}
+
 module.exports = {
   getallWarranties,
   createWarranty,
   updateWarranty,
   deleteWarranty,
   getWarranty,
+  getUserWarranties,
+  checkWarranty,
+  approveWarranty,
 };

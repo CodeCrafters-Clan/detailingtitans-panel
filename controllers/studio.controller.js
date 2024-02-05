@@ -173,6 +173,11 @@ const approveStudio = async (req, res) => {
   return res.json({ message: `Studio Approved` });
 };
 
+const getUserStudio = async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+};
+
 module.exports = {
   getallStudios,
   createStudio,
@@ -180,4 +185,5 @@ module.exports = {
   deleteStudio,
   getStudio,
   approveStudio,
+  getUserStudio,
 };
