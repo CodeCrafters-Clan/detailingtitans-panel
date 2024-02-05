@@ -171,7 +171,7 @@ const deleteWarranty = async (req, res) => {
 
 const getWarranty = async (req, res) => {
   const id = req.params.id;
-  const warranty = await Warranty.findById(id).lean();
+  const warranty = await Warranty.findById(id).populate("productkey");
   if (!warranty)
     return res.status(400).json({ message: "Warranty Not Found!" });
   return res.json(warranty);
