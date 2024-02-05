@@ -8,11 +8,10 @@ router.route("/").post(studioController.createStudio);
 
 router.use(verifyJWT);
 router.route("/user/:userId").get(studioController.getUserStudio);
-
+router.route("/:id").get(studioController.getStudio);
 // .patch(studioController.updateStudio);
 
 router.use(verifyAdmin);
-router.route("/:id").get(studioController.getStudio);
 router.route("/").get(studioController.getallStudios);
 router.route("/:id").delete(studioController.deleteStudio);
 router.route("/:id").post(studioController.approveStudio);

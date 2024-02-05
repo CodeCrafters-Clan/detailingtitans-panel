@@ -168,7 +168,7 @@ const deleteStudio = async (req, res) => {
 
 const getStudio = async (req, res) => {
   const id = req.params.id;
-  const studio = await Studio.findById(id).lean();
+  const studio = await Studio.findById(id).populate("user");
   if (!studio) return res.status(400).json({ message: "Studio not found" });
   return res.json(studio);
 };
