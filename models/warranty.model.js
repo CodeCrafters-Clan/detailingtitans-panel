@@ -68,6 +68,7 @@ const warrantySchema = new mongoose.Schema(
     vehicle_number: {
       type: String,
       required: true,
+      unique: true,
     },
     vehicle_chassi_no: {
       type: String,

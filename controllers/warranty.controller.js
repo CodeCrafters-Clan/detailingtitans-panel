@@ -179,7 +179,7 @@ const getWarranty = async (req, res) => {
 
 const getUserWarranties = async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
+  // console.log(userId);
   if (!userId) return res.status(400).json({ message: "UserID is required" });
   const warranties = await Warranty.find({ user: userId })
     .populate("productkey")
@@ -191,7 +191,14 @@ const getUserWarranties = async (req, res) => {
 
 const checkWarranty = async (req, res) => {
   const { vehNo } = req.params;
-  console.log(vehNo);
+  // console.log(vehNo);
+  if (!vehNo)
+    return res.status(400).json({ message: "Vehicle Number is required" });
+  const warranty = await Warranty.findOne({ vehicle_number: vehNo }).populate(
+    "productkey"
+  );
+  if (!warranty) return res.status(400).json({ message: "No Warranty Found" });
+  return res.json(warranty._id);
 };
 
 const approveWarranty = async (req, res) => {
