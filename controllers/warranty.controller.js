@@ -180,6 +180,13 @@ const getWarranty = async (req, res) => {
 const getUserWarranties = async (req, res) => {
   const { userId } = req.params;
   console.log(userId);
+  if (!userId) return res.status(400).json({ message: "UserID is required" });
+  const warranties = await Warranty.find({ user: userId })
+    .populate("productkey")
+    .sort([["createdAt", -1]]);
+  if (!warranties)
+    return res.status(400).json({ message: "No User Warranties Found" });
+  return res.json(warranties);
 };
 
 const checkWarranty = async (req, res) => {

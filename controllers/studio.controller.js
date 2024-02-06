@@ -187,7 +187,14 @@ const approveStudio = async (req, res) => {
 
 const getUserStudio = async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
+  // console.log(userId);
+  if (!userId) return res.status(400).json({ message: "UserID is required" });
+  const studios = await Studio.find({ user: userId })
+    .populate("user")
+    .sort([["createdAt", -1]]);
+  if (!studios)
+    return res.status(400).json({ message: "No User Studios Found" });
+  return res.json(studios);
 };
 
 module.exports = {
