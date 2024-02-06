@@ -6,7 +6,9 @@ const getallStudios = async (req, res) => {
   // if (!studios?.length) {
   //   return res.status(400).json({ message: "No studios found" });
   // }
-  const studioswithUser = await Studio.find().populate("user");
+  const studioswithUser = await Studio.find()
+    .populate("user")
+    .sort([["createdAt", -1]]);
   if (!studioswithUser?.length) {
     // return res.status(400).json({ message: "No studios found" });
     return res.json([]);

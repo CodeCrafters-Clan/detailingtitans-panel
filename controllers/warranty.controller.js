@@ -8,7 +8,9 @@ const getallWarranties = async (req, res) => {
   //   return res.status(400).json({ message: "No Warranties Found!!" });
   // }
   // return res.json(warranties);
-  const warranties = await Warranty.find().populate("productkey");
+  const warranties = await Warranty.find()
+    .populate("productkey")
+    .sort([["createdAt", -1]]);
   if (!warranties?.length) {
     return res.json([]);
   }
