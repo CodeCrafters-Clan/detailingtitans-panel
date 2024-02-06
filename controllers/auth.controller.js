@@ -94,17 +94,18 @@ const forgotpassword = async (req, res) => {
   );
 
   // foundUser.resetToken = resetToken;
-
   // await User.findByIdAndUpdate(foundUser._id, foundUser);
 
-  console.log(`http://localhost:3000/reset-password?resetToken=${resetToken}`);
+  console.log(
+    `http://localhost:3000/auth/reset-password?resetToken=${resetToken}`
+  );
 
-  // const userObject = {
-  //   to: email,
-  //   subject: "Hello",
-  //   text: "Nice",
-  // };
-  // await sendMail(userObject);
+  const userObject = {
+    to: email,
+    subject: "Reset Password",
+    text: `http://localhost:3000/auth/reset-password?resetToken=${resetToken}`,
+  };
+  await sendMail(userObject);
 
   res.json({ message: true });
 };
