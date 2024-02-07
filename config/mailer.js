@@ -11,7 +11,7 @@ exports.sendMail = async ({ to, subject, text }) => {
   });
 
   const mailOptions = {
-    from: "deepakpvt26@gmail.com",
+    from: "no-reply@gmail.com",
     to,
     subject,
     text,

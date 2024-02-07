@@ -85,7 +85,7 @@ const forgotpassword = async (req, res) => {
   if (!email) return res.status(400).json({ message: "Email is required" });
 
   const foundUser = await User.findOne({ email }).exec();
-  if (!foundUser) return res.status(400).json({ message: "Invalid Email" });
+  if (!foundUser) return res.status(400).json({ message: "Email not exists" });
 
   const resetToken = jwt.sign(
     { id: foundUser._id },
