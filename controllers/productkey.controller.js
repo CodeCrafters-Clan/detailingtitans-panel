@@ -36,7 +36,7 @@ const readtoDB = async (req, res) => {
       productkeyData.push({
         productkey: data.productkeys[i].productkey,
         tenure: getTenure(data.productkeys[i].productkey),
-        status: true,
+        status: false,
       });
     } else {
       notactive++;

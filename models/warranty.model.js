@@ -75,7 +75,7 @@ const warrantySchema = new mongoose.Schema(
       required: true,
     },
     vehicle_installation_date: {
-      type: String,
+      type: Date,
       required: true,
     },
     // ppf_coverage: {

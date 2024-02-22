@@ -66,8 +66,7 @@ const createWarranty = async (req, res) => {
     !vehicle_number ||
     !vehicle_chassi_no ||
     !vehicle_installation_date ||
-    !installer_coverage ||
-    !installer_by
+    !installer_coverage
   ) {
     return res.status(400).json({ message: "Necessary fields are required" });
   }

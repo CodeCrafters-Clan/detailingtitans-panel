@@ -10,7 +10,7 @@ const verifyJWT = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   // here we usually check for access token secret but now we are decoding here refresh_token
-  jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.AUTH_TOKEN_SECRET, (err, decoded) => {
     // console.log(decoded);
     if (err) return res.status(403).json({ message: "Forbidden" });
     req.userId = decoded.id;

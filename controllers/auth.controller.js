@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
-const { sendMail } = require("../config/mailer");
+const { forgotpasswordMail } = require("../utils/mails");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -19,14 +19,9 @@ const login = async (req, res) => {
   const match = await bcrypt.compare(password, foundUser.password);
   if (!match) return res.status(401).json({ message: "Unauthorized" });
 
-  // const accessToken = jwt.sign(
-  //   { id: foundUser._id },
-  //   process.env.ACCESS_TOKEN_SECRET,
-  //   { expiresIn: "15m" }
-  // );
   const refreshToken = jwt.sign(
     { id: foundUser._id, role: foundUser?.role },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.AUTH_TOKEN_SECRET,
     { expiresIn: "1d" }
   );
   // it is not working with nextJs
@@ -41,29 +36,6 @@ const login = async (req, res) => {
     refreshToken: refreshToken,
     role: foundUser.role,
   });
-};
-
-const refresh = async (req, res) => {
-  // const cookies = req.cookies;
-  // if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" });
-  // const refreshToken = cookies.jwt;
-  // jwt.verify(
-  //   refreshToken,
-  //   process.env.REFRESH_TOKEN_SECRET,
-  //   async (err, decoded) => {
-  //     //   console.log(decoded);
-  //     if (err) return res.status(403).json({ message: "Forbidden" });
-  //     const foundUser = await User.findById(decoded.id).select("-password");
-  //     //   console.log(foundUser);
-  //     if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
-  //     const accessToken = jwt.sign(
-  //       { id: foundUser._id },
-  //       process.env.ACCESS_TOKEN_SECRET,
-  //       { expiresIn: "15m" }
-  //     );
-  //     res.json({ accessToken: accessToken });
-  //   }
-  // );
 };
 
 const logout = async (req, res) => {
@@ -93,21 +65,16 @@ const forgotpassword = async (req, res) => {
     { expiresIn: "30m" }
   );
 
-  // foundUser.resetToken = resetToken;
-  // await User.findByIdAndUpdate(foundUser._id, foundUser);
+  // console.log(foundUser);
 
-  console.log(
-    `http://localhost:3000/auth/reset-password?resetToken=${resetToken}`
-  );
-
-  const userObject = {
-    to: email,
-    subject: "Reset Password",
-    text: `http://localhost:3000/auth/reset-password?resetToken=${resetToken}`,
+  data = {
+    reset: `${process.env.FRONTEND_URI}/auth/reset-password?resetToken=${resetToken}`,
+    email: email,
+    username: foundUser?.name,
   };
-  await sendMail(userObject);
 
-  res.json({ message: true });
+  const check = (await forgotpasswordMail(data)) || false;
+  res.json({ message: check });
 };
 
 const verifyToken = async (req, res) => {
@@ -162,7 +129,6 @@ const resetPassword = async (req, res) => {
 
 module.exports = {
   login,
-  refresh,
   logout,
   forgotpassword,
   verifyToken,
