@@ -1,6 +1,8 @@
 const User = require("../models/user.model");
 const Warranty = require("../models/warranty.model");
 const ProductKey = require("../models/productkey.model");
+const jwt = require("jsonwebtoken");
+const { approveWarrantyMail } = require("../utils/mails");
 
 const getallWarranties = async (req, res) => {
   // const warranties = await Warranty.find().lean();
@@ -82,20 +84,14 @@ const createWarranty = async (req, res) => {
 
   if (!user) return res.status(400).json({ message: "User not exists!" });
 
-  // console.log(productKey);
   const duplicateWarranty = await Warranty.findOne({
     // "productkey.$oid": productKey.$oid,
     productkey: productKey,
   });
 
-  // console.log(duplicateWarranty);
-
   if (duplicateWarranty) {
     return res.status(409).json({ message: "Duplicate Warranty Found!!" });
   }
-
-  // console.log(duplicateWarranty);
-  // console.log(productKey._id);
 
   let warrantyObj = {
     user: user._id,
@@ -135,15 +131,34 @@ const createWarranty = async (req, res) => {
     }
   }
 
-  // console.log(warrantyObj);
-
   const warranty = await Warranty.create(warrantyObj);
 
   if (warranty) {
+    const key = await ProductKey.findById(productKey._id);
     if (isAdmin) {
-      const key = await ProductKey.findById(productKey._id);
       key.status = isAdmin;
       await key.save();
+    } else {
+      const keyToken = jwt.sign(
+        { id: productKey._id },
+        process.env.WARRANTY_ACTION_SECRET,
+        { expiresIn: "30d" }
+      );
+
+      let data = {
+        approvelink: `${
+          process.env.FRONTEND_URI
+        }/auth/warranty?keyToken=${keyToken}&approve=${true}`,
+        denylink: `${
+          process.env.FRONTEND_URI
+        }/auth/warranty?keyToken=${keyToken}&approve=${false}`,
+        productkey: productkeyId,
+        name,
+        email,
+        mobile,
+        tenure: key?.tenure,
+      };
+      await approveWarrantyMail(data);
     }
     return res.status(201).json({ message: "New Warranty created" });
   } else {
@@ -204,18 +219,66 @@ const checkWarranty = async (req, res) => {
 
 const approveWarranty = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+  // console.log(id);
   if (!id) return res.status(400).json({ message: "Warranty ID Required" });
   const warranty = await Warranty.findById(id).exec();
-  console.log(warranty);
+  // console.log(warranty);
   if (!warranty) return res.status(400).json({ message: "Warranty not found" });
 
   const key = await ProductKey.findById(warranty.productkey);
-  console.log(key);
+  // console.log(key);
   if (!key) return res.status(400).json({ message: "Productkey not found" });
   key.status = true;
   await key.save();
   return res.json({ message: "Warranty Approved" });
+};
+
+const verifykeyToken = async (req, res) => {
+  // console.log("started");
+  const { keyToken } = req.body;
+  // console.log(keyToken);
+
+  if (!keyToken) return res.status(400).json({ message: "Unauthorized" });
+  jwt.verify(
+    keyToken,
+    process.env.WARRANTY_ACTION_SECRET,
+    async (err, decoded) => {
+      // console.log(decoded);
+      if (err) return res.status(403).json({ message: "Forbidden" });
+
+      const key = await ProductKey.findById(decoded.id);
+      if (!key)
+        return res.status(401).json({ message: "Wrong Product Key Found" });
+
+      const warranty = await Warranty.findOne({ productkey: decoded.id });
+      if (!warranty) return res.json({ message: "Warranty not Found" });
+      // console.log(warranty);
+      return res.json({ id: warranty?._id, name: warranty?.name });
+    }
+  );
+};
+
+const keyTokenActions = async (req, res) => {
+  const { id } = req.params;
+  const { keyToken, action } = req.body;
+  // console.log(id, keyToken, action);
+  if (!keyToken) return res.status(400).json({ message: "Unauthorized" });
+  jwt.verify(
+    keyToken,
+    process.env.WARRANTY_ACTION_SECRET,
+    async (err, decoded) => {
+      // console.log(decoded);
+      if (err) return res.status(403).json({ message: "Forbidden" });
+      else {
+        const warranty = await Warranty.findById(id).exec();
+        if (warranty) {
+          action === "true"
+            ? await approveWarranty(req, res)
+            : await deleteWarranty(req, res);
+        }
+      }
+    }
+  );
 };
 
 module.exports = {
@@ -227,4 +290,6 @@ module.exports = {
   getUserWarranties,
   checkWarranty,
   approveWarranty,
+  verifykeyToken,
+  keyTokenActions,
 };

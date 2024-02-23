@@ -67,7 +67,7 @@ const forgotpassword = async (req, res) => {
 
   // console.log(foundUser);
 
-  data = {
+  let data = {
     reset: `${process.env.FRONTEND_URI}/auth/reset-password?resetToken=${resetToken}`,
     email: email,
     username: foundUser?.name,

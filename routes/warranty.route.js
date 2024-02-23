@@ -4,6 +4,9 @@ const verifyJWT = require("../middlewares/verifyJWT");
 const warrantyController = require("../controllers/warranty.controller");
 const verifyAdmin = require("../middlewares/verifyAdmin");
 
+router.route("/verify-keytoken").post(warrantyController.verifykeyToken);
+router.route("/keytoken-actions/:id").post(warrantyController.keyTokenActions);
+
 router.use(verifyJWT);
 router.route("/user/:userId").get(warrantyController.getUserWarranties);
 router.route("/:id").get(warrantyController.getWarranty);
