@@ -2,7 +2,11 @@ const User = require("../models/user.model");
 const Warranty = require("../models/warranty.model");
 const ProductKey = require("../models/productkey.model");
 const jwt = require("jsonwebtoken");
-const { approveWarrantyMail } = require("../utils/mails");
+const {
+  approveWarrantyMail,
+  deleteWarrantyMail,
+  succeesWarrantyMail,
+} = require("../utils/mails");
 
 const getallWarranties = async (req, res) => {
   // const warranties = await Warranty.find().lean();
@@ -135,9 +139,20 @@ const createWarranty = async (req, res) => {
 
   if (warranty) {
     const key = await ProductKey.findById(productKey._id);
+
     if (isAdmin) {
       key.status = isAdmin;
       await key.save();
+
+      let data = {
+        name,
+        email,
+        mobile,
+        tenure: key?.tenure,
+        productkey: productkeyId,
+      };
+
+      succeesWarrantyMail(data);
     } else {
       const keyToken = jwt.sign(
         { id: productKey._id },
@@ -176,12 +191,22 @@ const deleteWarranty = async (req, res) => {
   if (!warranty) return res.status(400).json({ message: "Warranty not found" });
 
   const key = await ProductKey.findById(warranty.productkey);
-  // console.log(key);
   if (!key) return res.status(400).json({ message: "Productkey not found" });
+
+  let data = {
+    productkey: key?.productkey,
+    name: warranty?.name,
+    email: warranty?.email,
+    mobile: warranty?.mobile,
+    tenure: key?.tenure,
+  };
+
   key.status = false;
   await key.save();
-
   await Warranty.deleteOne();
+
+  deleteWarrantyMail(data);
+
   return res.json({ message: "Warranty Deleted!!" });
 };
 
@@ -219,17 +244,27 @@ const checkWarranty = async (req, res) => {
 
 const approveWarranty = async (req, res) => {
   const { id } = req.params;
-  // console.log(id);
   if (!id) return res.status(400).json({ message: "Warranty ID Required" });
+
   const warranty = await Warranty.findById(id).exec();
-  // console.log(warranty);
   if (!warranty) return res.status(400).json({ message: "Warranty not found" });
 
   const key = await ProductKey.findById(warranty.productkey);
-  // console.log(key);
   if (!key) return res.status(400).json({ message: "Productkey not found" });
+
+  let data = {
+    productkey: key?.productkey,
+    name: warranty?.name,
+    email: warranty?.email,
+    mobile: warranty?.mobile,
+    tenure: key?.tenure,
+  };
+
   key.status = true;
   await key.save();
+
+  succeesWarrantyMail(data);
+
   return res.json({ message: "Warranty Approved" });
 };
 
@@ -248,8 +283,7 @@ const verifykeyToken = async (req, res) => {
 
       const key = await ProductKey.findById(decoded.id);
       console.log(key);
-      if (!key)
-        return res.status(401).json({ message: "No Warranty Found" });
+      if (!key) return res.status(401).json({ message: "No Warranty Found" });
       if (key?.status) return res.json({ status: true });
       const warranty = await Warranty.findOne({ productkey: decoded.id });
       if (!warranty) return res.json({ message: "Warranty not Found" });

@@ -1,7 +1,11 @@
 const Studio = require("../models/studio.model");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
-const { approveStudioMail, deleteStudioMail } = require("../utils/mails");
+const {
+  approveStudioMail,
+  deleteStudioMail,
+  succeesStudioMail,
+} = require("../utils/mails");
 
 const getallStudios = async (req, res) => {
   // const studios = await Studio.find().lean();
@@ -63,6 +67,12 @@ const createStudio = async (req, res) => {
   console.log(user);
 
   if (status) {
+    let data = {
+      name: user?.name,
+      email: user?.email,
+      mobile: user?.mobile,
+    };
+    succeesStudioMail(data);
   } else {
     const studioToken = jwt.sign(
       { id: user?._id },
@@ -214,10 +224,20 @@ const getStudio = async (req, res) => {
 const approveStudio = async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ message: "Studio ID Required" });
+
   const studio = await Studio.findById(id).exec();
   if (!studio) return res.status(400).json({ message: "Studio not found" });
   const user = await User.findById(studio.user);
   if (!user) return res.status(400).json({ message: "User not found" });
+
+  let data = {
+    name: user?.name,
+    email: user?.email,
+    mobile: user?.mobile,
+  };
+
+  succeesStudioMail(data);
+
   user.status = true;
   await user.save();
   return res.json({ message: `Studio Approved` });
