@@ -158,7 +158,7 @@ const createWarranty = async (req, res) => {
         mobile,
         tenure: key?.tenure,
       };
-      await approveWarrantyMail(data);
+      approveWarrantyMail(data);
     }
     return res.status(201).json({ message: "New Warranty created" });
   } else {
@@ -247,9 +247,10 @@ const verifykeyToken = async (req, res) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
 
       const key = await ProductKey.findById(decoded.id);
+      console.log(key);
       if (!key)
-        return res.status(401).json({ message: "Wrong Product Key Found" });
-
+        return res.status(401).json({ message: "No Warranty Found" });
+      if (key?.status) return res.json({ status: true });
       const warranty = await Warranty.findOne({ productkey: decoded.id });
       if (!warranty) return res.json({ message: "Warranty not Found" });
       // console.log(warranty);

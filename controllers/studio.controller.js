@@ -1,5 +1,7 @@
 const Studio = require("../models/studio.model");
 const User = require("../models/user.model");
+const jwt = require("jsonwebtoken");
+const { approveStudioMail } = require("../utils/mails");
 
 const getallStudios = async (req, res) => {
   // const studios = await Studio.find().lean();
@@ -18,7 +20,6 @@ const getallStudios = async (req, res) => {
 
 // the status we are getting here is off user not for studio..
 const createStudio = async (req, res) => {
-  // console.log(req.body);
   const {
     userId,
     user_doc_name,
@@ -59,6 +60,29 @@ const createStudio = async (req, res) => {
   if (!user) return res.status(400).json({ message: "User not exists!" });
 
   user.status = status;
+  console.log(user);
+
+  if (status) {
+  } else {
+    const studioToken = jwt.sign(
+      { id: user?._id },
+      process.env.STUDIO_ACTION_SECRET,
+      { expiresIn: "30d" }
+    );
+
+    let data = {
+      approvelink: `${
+        process.env.FRONTEND_URI
+      }/auth/studio?studioToken=${studioToken}&approve=${true}`,
+      denylink: `${
+        process.env.FRONTEND_URI
+      }/auth/studio?studioToken=${studioToken}&approve=${false}`,
+      name: user?.name,
+      email: user?.email,
+      mobile: user?.mobile,
+    };
+    approveStudioMail(data);
+  }
 
   let studioObj = {
     user: userId,
@@ -199,6 +223,51 @@ const getUserStudio = async (req, res) => {
   return res.json(studios);
 };
 
+const verifystudioToken = async (req, res) => {
+  const { studioToken } = req.body;
+  if (!studioToken) return res.status(400).json({ message: "Unauthorized" });
+  jwt.verify(
+    studioToken,
+    process.env.STUDIO_ACTION_SECRET,
+    async (err, decoded) => {
+      // console.log(decoded);
+      if (err) return res.status(403).json({ message: "Forbidden" });
+
+      const user = await User.findById(decoded.id);
+      if (!user) return res.status(401).json({ message: "No Studio Found" });
+
+      if (user?.status) return res.json({ status: true });
+      const studio = await Studio.findOne({ user: decoded.id });
+
+      if (!studio) return res.json({ message: "Studio not Found" });
+      return res.json({ id: studio?._id, name: user?.name });
+    }
+  );
+};
+
+const studioTokenActions = async (req, res) => {
+  const { id } = req.params;
+  const { studioToken, action } = req.body;
+
+  if (!studioToken) return res.status(400).json({ message: "Unauthorized" });
+  jwt.verify(
+    studioToken,
+    process.env.STUDIO_ACTION_SECRET,
+    async (err, decoded) => {
+      console.log(decoded);
+      if (err) return res.status(403).json({ message: "Forbidden" });
+      else {
+        const studio = await Studio.findById(id).exec();
+        if (studio) {
+          action === "true"
+            ? await approveStudio(req, res)
+            : await deleteStudio(req, res);
+        }
+      }
+    }
+  );
+};
+
 module.exports = {
   getallStudios,
   createStudio,
@@ -207,4 +276,6 @@ module.exports = {
   getStudio,
   approveStudio,
   getUserStudio,
+  verifystudioToken,
+  studioTokenActions,
 };

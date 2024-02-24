@@ -53,10 +53,11 @@ const logout = async (req, res) => {
 
 const forgotpassword = async (req, res) => {
   const { email } = req.body;
-
+  // console.log(email);
   if (!email) return res.status(400).json({ message: "Email is required" });
 
   const foundUser = await User.findOne({ email }).exec();
+  // console.log(foundUser);
   if (!foundUser) return res.status(400).json({ message: "Email not exists" });
 
   const resetToken = jwt.sign(
@@ -65,16 +66,15 @@ const forgotpassword = async (req, res) => {
     { expiresIn: "30m" }
   );
 
-  // console.log(foundUser);
-
   let data = {
     reset: `${process.env.FRONTEND_URI}/auth/reset-password?resetToken=${resetToken}`,
     email: email,
     username: foundUser?.name,
   };
 
-  const check = (await forgotpasswordMail(data)) || false;
-  res.json({ message: check });
+  const check = forgotpasswordMail(data) || false;
+  // console.log(check);
+  res.json({ message: true });
 };
 
 const verifyToken = async (req, res) => {
