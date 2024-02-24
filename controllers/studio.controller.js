@@ -1,7 +1,7 @@
 const Studio = require("../models/studio.model");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
-const { approveStudioMail } = require("../utils/mails");
+const { approveStudioMail, deleteStudioMail } = require("../utils/mails");
 
 const getallStudios = async (req, res) => {
   // const studios = await Studio.find().lean();
@@ -184,11 +184,23 @@ const updateStudio = async (req, res) => {
 const deleteStudio = async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ message: "Studio ID Required" });
+
   const studio = await Studio.findById(id).exec();
-  const user = await User.findById(studio.user);
   if (!studio) return res.status(400).json({ message: "Studio not found" });
+
+  const user = await User.findById(studio.user);
+
+  let data = {
+    name: user?.name,
+    email: user?.email,
+    mobile: user?.mobile,
+  };
+
   await user.deleteOne();
   await studio.deleteOne();
+
+  deleteStudioMail(data);
+
   return res.json({ message: `Studio Deleted!!` });
 };
 
