@@ -206,7 +206,7 @@ const deleteStudio = async (req, res) => {
     mobile: user?.mobile,
   };
 
-  await user.deleteOne();
+  user.deleteOne();
   await studio.deleteOne();
 
   deleteStudioMail(data);

@@ -202,7 +202,7 @@ const deleteWarranty = async (req, res) => {
   };
 
   key.status = false;
-  await key.save();
+  key.save(); // not using await here..
   await Warranty.deleteOne();
 
   deleteWarrantyMail(data);
@@ -239,6 +239,9 @@ const checkWarranty = async (req, res) => {
     "productkey"
   );
   if (!warranty) return res.status(400).json({ message: "No Warranty Found" });
+  if (!warranty?.productkey?.status)
+    return res.status(400).json({ message: "Warranty is not Yet Approved" });
+  // console.log(warranty);
   return res.json(warranty._id);
 };
 
