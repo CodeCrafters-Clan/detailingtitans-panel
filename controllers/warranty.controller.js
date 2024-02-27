@@ -9,11 +9,6 @@ const {
 } = require("../utils/mails");
 
 const getallWarranties = async (req, res) => {
-  // const warranties = await Warranty.find().lean();
-  // if (!warranties?.length) {
-  //   return res.status(400).json({ message: "No Warranties Found!!" });
-  // }
-  // return res.json(warranties);
   const warranties = await Warranty.find()
     .populate("productkey")
     .sort([["createdAt", -1]]);
@@ -88,13 +83,19 @@ const createWarranty = async (req, res) => {
 
   if (!user) return res.status(400).json({ message: "User not exists!" });
 
+  // const duplicateWarranty = await Warranty.findOne({
+  //   // "productkey.$oid": productKey.$oid,
+  //   productkey: productKey,
+  // });
+
   const duplicateWarranty = await Warranty.findOne({
-    // "productkey.$oid": productKey.$oid,
-    productkey: productKey,
+    $or: [{ productkey: productKey }, { vehicle_number: vehicle_number }],
   });
 
   if (duplicateWarranty) {
-    return res.status(409).json({ message: "Duplicate Warranty Found!!" });
+    return res
+      .status(409)
+      .json({ message: "Duplicate Key or Vehicle Number Found!!" });
   }
 
   let warrantyObj = {
@@ -202,7 +203,7 @@ const deleteWarranty = async (req, res) => {
   };
 
   key.status = false;
-  key.save(); // not using await here..
+  await key.save();
   await Warranty.deleteOne();
 
   deleteWarrantyMail(data);
