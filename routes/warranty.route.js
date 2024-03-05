@@ -6,12 +6,12 @@ const verifyAdmin = require("../middlewares/verifyAdmin");
 
 router.route("/verify-keytoken").post(warrantyController.verifykeyToken);
 router.route("/keytoken-actions/:id").post(warrantyController.keyTokenActions);
+router.route("/checkWarranty/:vehNo").get(warrantyController.checkWarranty);
+router.route("/:id").get(warrantyController.getWarranty);
 
 router.use(verifyJWT);
 router.route("/user/:userId").get(warrantyController.getUserWarranties);
-router.route("/:id").get(warrantyController.getWarranty);
 router.route("/").post(warrantyController.createWarranty);
-router.route("/checkWarranty/:vehNo").get(warrantyController.checkWarranty);
 
 router.use(verifyAdmin);
 router.route("/").get(warrantyController.getallWarranties);

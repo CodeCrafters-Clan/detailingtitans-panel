@@ -64,7 +64,7 @@ const createStudio = async (req, res) => {
   if (!user) return res.status(400).json({ message: "User not exists!" });
 
   user.status = status;
-  console.log(user);
+  // console.log(user);
 
   if (status) {
     let data = {
@@ -77,7 +77,7 @@ const createStudio = async (req, res) => {
     const studioToken = jwt.sign(
       { id: user?._id },
       process.env.STUDIO_ACTION_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "7d" }
     );
 
     let data = {
@@ -209,9 +209,9 @@ const deleteStudio = async (req, res) => {
   await user.deleteOne();
   await studio.deleteOne();
 
-  deleteStudioMail(data);
-
-  return res.json({ message: `Studio Deleted!!` });
+  res.json({ message: `Studio Deleted!!` });
+  await deleteStudioMail(data);
+  return;
 };
 
 const getStudio = async (req, res) => {
@@ -236,11 +236,11 @@ const approveStudio = async (req, res) => {
     mobile: user?.mobile,
   };
 
-  succeesStudioMail(data);
-
   user.status = true;
   await user.save();
-  return res.json({ message: `Studio Approved` });
+  res.json({ message: `Studio Approved` });
+  await succeesStudioMail(data);
+  return;
 };
 
 const getUserStudio = async (req, res) => {

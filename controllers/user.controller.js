@@ -37,13 +37,13 @@ const createUser = async (req, res) => {
     mobile,
     password: hashedPwd,
   };
-  console.log("Yaha");
+  // console.log("Yaha");
   const user = await User.create(userObject);
 
   if (user) {
-    res.status(201).json(user);
+    return res.status(201).json(user);
   } else {
-    res.status(400).json({ message: "Invalid user data received" });
+    return res.status(400).json({ message: "Invalid user data received" });
   }
 };
 

@@ -158,7 +158,7 @@ const createWarranty = async (req, res) => {
       const keyToken = jwt.sign(
         { id: productKey._id },
         process.env.WARRANTY_ACTION_SECRET,
-        { expiresIn: "30d" }
+        { expiresIn: "7d" }
       );
 
       let data = {
@@ -206,9 +206,9 @@ const deleteWarranty = async (req, res) => {
   await key.save();
   await Warranty.deleteOne();
 
-  deleteWarrantyMail(data);
-
-  return res.json({ message: "Warranty Deleted!!" });
+  res.json({ message: "Warranty Deleted!!" });
+  await deleteWarrantyMail(data);
+  return;
 };
 
 const getWarranty = async (req, res) => {
@@ -267,9 +267,9 @@ const approveWarranty = async (req, res) => {
   key.status = true;
   await key.save();
 
-  succeesWarrantyMail(data);
-
-  return res.json({ message: "Warranty Approved" });
+  res.json({ message: "Warranty Approved" });
+  await succeesWarrantyMail(data);
+  return;
 };
 
 const verifykeyToken = async (req, res) => {

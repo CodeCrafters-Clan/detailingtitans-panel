@@ -72,9 +72,11 @@ const forgotpassword = async (req, res) => {
     username: foundUser?.name,
   };
 
-  const check = forgotpasswordMail(data) || false;
-  // console.log(check);
   res.json({ message: true });
+  // const check = forgotpasswordMail(data) || false;
+  // console.log(check);
+  await forgotpasswordMail(data);
+  return;
 };
 
 const verifyToken = async (req, res) => {

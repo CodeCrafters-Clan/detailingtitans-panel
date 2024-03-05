@@ -1,9 +1,0 @@
-0000000000000000000000000000000000000000 e1608508c6aac25b7729c5a68d5e2d4a56519fd0 deepGIVAn <deepakpvt26@gmail.com> 1707302344 +0530	commit (initial): first commit
-e1608508c6aac25b7729c5a68d5e2d4a56519fd0 e1608508c6aac25b7729c5a68d5e2d4a56519fd0 deepGIVAn <deepakpvt26@gmail.com> 1707302345 +0530	Branch: renamed refs/heads/master to refs/heads/main
-e1608508c6aac25b7729c5a68d5e2d4a56519fd0 4d5e67cfc20965739c9311d05eaa99f3fe61270e deepGIVAn <deepakpvt26@gmail.com> 1707475590 +0530	commit: bugs resolved
-4d5e67cfc20965739c9311d05eaa99f3fe61270e 98d1f473e96d1a3e3d5b33f4fcecf16157856909 deepGIVAn <deepakpvt26@gmail.com> 1707554442 +0530	commit: warranty changed
-98d1f473e96d1a3e3d5b33f4fcecf16157856909 0b5a06973c0027c68b8e21a9583d6ed5cec252f4 deepGIVAn <deepakpvt26@gmail.com> 1707555840 +0530	commit: prod : donw
-0b5a06973c0027c68b8e21a9583d6ed5cec252f4 29e5244840400dc2dd0cd82da14e3c25a0b99a0e deepGIVAn <deepakpvt26@gmail.com> 1707557070 +0530	commit: prod : allowed origins
-29e5244840400dc2dd0cd82da14e3c25a0b99a0e a95e13f3bcc5e4d0c2dad7ed31fb78296c79441b deepGIVAn <deepakpvt26@gmail.com> 1707657404 +0530	commit: firebase origin added
-a95e13f3bcc5e4d0c2dad7ed31fb78296c79441b 097a864182dd525df79508d0fa7f19450040a3d8 deepGIVAn <deepakpvt26@gmail.com> 1708147185 +0530	commit: productkey and dburl
-097a864182dd525df79508d0fa7f19450040a3d8 83419519cb348154b5bfe5252445afb7a63a731f deepGIVAn <deepakpvt26@gmail.com> 1708171765 +0530	commit: warranty model date
