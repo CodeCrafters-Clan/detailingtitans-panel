@@ -8,11 +8,10 @@ const sendOtp = async (req, res) => {
 
   if (!email) return res.status(400).json({ message: "Email is required!" });
 
-  const duplicate = await Otp.findOne({ entity: email })
+  await Otp.findOneAndDelete({ entity: email })
     .collation({ locale: "en", strength: 2 })
     .lean()
     .exec();
-  if (duplicate) return res.status(200);
 
   const obj = await Otp.create({
     entity: email,
