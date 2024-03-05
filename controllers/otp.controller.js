@@ -12,8 +12,7 @@ const sendOtp = async (req, res) => {
     .collation({ locale: "en", strength: 2 })
     .lean()
     .exec();
-  if (duplicate)
-    return res.status(400).json({ message: "Duplicate Email Found" });
+  if (duplicate) return res.status(200);
 
   const obj = await Otp.create({
     entity: email,
@@ -23,7 +22,7 @@ const sendOtp = async (req, res) => {
   if (obj) {
     const mailobj = {
       to: email,
-      subject: "OTP",
+      subject: "Detailing Titans : OTP",
       text: `Your OTP is ${otp}`,
     };
     res.status(201).json(obj);
@@ -45,7 +44,7 @@ const verifyOtp = async (req, res) => {
 
   if (otp == emailObj?.otp) {
     await emailObj.deleteOne();
-    return res.json({ message: true });
+    return res.status(200).json({ message: "Otp  Verified Successfully" });
   }
   return res.status(400).json({ message: "Invalid Otp" });
 };
