@@ -1,4 +1,5 @@
 const ProductKey = require("../models/productkey.model");
+const Warranty = require("../models/warranty.model");
 const data = {};
 
 data.productkeys = require("../data/productkey.json");
@@ -37,6 +38,7 @@ const readtoDB = async (req, res) => {
         productkey: data.productkeys[i].productkey,
         tenure: getTenure(data.productkeys[i].productkey),
         status: false,
+        warrantyStatus: false,
       });
     } else {
       notactive++;
@@ -44,6 +46,7 @@ const readtoDB = async (req, res) => {
         productkey: data.productkeys[i].productkey,
         tenure: getTenure(data.productkeys[i].productkey),
         status: false,
+        warrantyStatus: false,
       });
     }
   }
@@ -55,15 +58,29 @@ const readtoDB = async (req, res) => {
 
 const getKeyDetails = async (req, res) => {
   const { key } = req.params;
-  console.log(key);
+  // console.log(key);
   const productkey = await ProductKey.find({ productkey: key }).lean();
-  console.log(productkey);
+  // console.log(productkey);
   if (!productkey || productkey?.length === 0)
     return res.status(400).json({ message: "Invalid Product Key" });
   return res.json(productkey);
 };
 
+const getAKey = async (req, res) => {
+  const { years } = req.body;
+  const productkey = await ProductKey.findOne({
+    $and: [
+      { tenure: { $eq: years } },
+      { status: false },
+      { warrantyStatus: false },
+    ],
+  });
+  if (productkey) return res.json(productkey?.productkey);
+  return res.status(400).json({ message: "No Product Key Found" });
+};
+
 module.exports = {
   readtoDB,
   getKeyDetails,
+  getAKey,
 };

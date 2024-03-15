@@ -9,9 +9,8 @@ const {
 } = require("../utils/mails");
 
 const getallWarranties = async (req, res) => {
-  const warranties = await Warranty.find()
-    .populate("productkey")
-    .sort([["createdAt", -1]]);
+  const warranties = await Warranty.find().populate("productkey");
+  // .sort([["createdAt", -1]]);
   if (!warranties?.length) {
     return res.json([]);
   }
@@ -140,10 +139,10 @@ const createWarranty = async (req, res) => {
 
   if (warranty) {
     const key = await ProductKey.findById(productKey._id);
+    key.warrantyStatus = true;
 
     if (isAdmin) {
       key.status = isAdmin;
-      await key.save();
 
       let data = {
         name,
@@ -176,6 +175,7 @@ const createWarranty = async (req, res) => {
       };
       approveWarrantyMail(data);
     }
+    await key.save();
     return res.status(201).json({ message: "New Warranty created" });
   } else {
     return res.status(400).json({ message: "Invalid warranty data received" });
@@ -203,6 +203,8 @@ const deleteWarranty = async (req, res) => {
   };
 
   key.status = false;
+  key.warrantyStatus = false;
+
   await key.save();
   await Warranty.deleteOne();
 
